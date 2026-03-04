@@ -1,0 +1,14 @@
+services:
+  traefik-cert-watcher:
+    build: .
+    image: ghcr.io/metril/traefik-cert-watcher:latest
+    container_name: traefik-cert-watcher
+    restart: unless-stopped
+    environment:
+      CERTS_DIR: /certs
+      TLS_YAML_PATH: /certs/tls.yaml
+      CERT_PATH_PREFIX: /certs
+      # DEFAULT_CERT: example.com
+      DEBOUNCE_MS: "2000"
+    volumes:
+      - ${CERTS_PATH:-/opt/docker/certs}:/certs
