@@ -54,6 +54,8 @@ services:
     image: ghcr.io/metril/traefik-cert-watcher:latest
     restart: unless-stopped
     environment:
+      PUID: "1000"
+      PGID: "1000"
       CERTS_DIR: /certs
       TLS_YAML_PATH: /certs/tls.yaml
       # DEFAULT_CERT: example.com
@@ -70,6 +72,8 @@ All configuration is via environment variables.
 
 | Variable | Default | Description |
 |---|---|---|
+| `PUID` | `1000` | UID the process runs as inside the container |
+| `PGID` | `1000` | GID the process runs as inside the container |
 | `CERTS_DIR` | `/certs` | Directory to watch for certificate files |
 | `TLS_YAML_PATH` | `<CERTS_DIR>/tls.yaml` | Output path for the generated Traefik TLS config |
 | `CERT_PATH_PREFIX` | `<CERTS_DIR>` | Path prefix used in generated cert/key paths (useful when the container mount differs from Traefik's view) |

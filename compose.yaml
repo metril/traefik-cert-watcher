@@ -5,6 +5,8 @@ services:
     container_name: traefik-cert-watcher
     restart: unless-stopped
     environment:
+      PUID: "1000"
+      PGID: "1000"
       CERTS_DIR: /certs
       TLS_YAML_PATH: /certs/tls.yaml
       CERT_PATH_PREFIX: /certs

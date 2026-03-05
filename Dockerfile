@@ -10,12 +10,12 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /traefik-cert-watcher 
 
 FROM alpine:3.20
 
-RUN addgroup -S app && adduser -S -G app app
+RUN apk add --no-cache su-exec
 
 COPY --from=builder /traefik-cert-watcher /usr/local/bin/traefik-cert-watcher
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-RUN mkdir -p /certs && chown app:app /certs
+RUN mkdir -p /certs
 
-USER app
-
-ENTRYPOINT ["traefik-cert-watcher"]
+ENTRYPOINT ["/entrypoint.sh"]
