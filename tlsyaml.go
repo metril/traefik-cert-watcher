@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -87,10 +88,16 @@ func buildTLSConfig(pairs []certPair, defaultCertBaseName string) tlsConfig {
 
 // writeTLSConfig serializes the config to the given path atomically (temp file + rename).
 func writeTLSConfig(path string, cfg tlsConfig) error {
-	data, err := yaml.Marshal(&cfg)
-	if err != nil {
+	var buf bytes.Buffer
+	enc := yaml.NewEncoder(&buf)
+	enc.SetIndent(2)
+	if err := enc.Encode(&cfg); err != nil {
 		return fmt.Errorf("marshaling tls config: %w", err)
 	}
+	if err := enc.Close(); err != nil {
+		return fmt.Errorf("closing yaml encoder: %w", err)
+	}
+	data := buf.Bytes()
 
 	dir := filepath.Dir(path)
 	tmp, err := os.CreateTemp(dir, ".tls-yaml-*.tmp")
