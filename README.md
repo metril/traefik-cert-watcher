@@ -98,6 +98,30 @@ tls:
         keyFile: /certs/example.com.key
 ```
 
+## Releases
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) and [release-please](https://github.com/googleapis/release-please) for automated versioning and changelog generation.
+
+### Versioning
+
+Versions follow [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`):
+
+| Commit prefix | Example | Effect |
+|---|---|---|
+| `fix:` | `fix: handle missing key file` | Patch bump (1.0.0 → 1.0.1) |
+| `feat:` | `feat: add PUID/PGID support` | Minor bump (1.0.0 → 1.1.0) |
+| `feat!:` / `BREAKING CHANGE:` | `feat!: rename env var` | Major bump (1.0.0 → 2.0.0) |
+| `docs:`, `chore:`, `refactor:`, `test:` | `chore: update deps` | No release |
+
+### Release process
+
+1. Commit to `main` using the prefixes above
+2. release-please opens a PR titled **"Release v1.x.y"** with an updated `CHANGELOG.md`
+3. Review and merge the PR
+4. The tag is created automatically, triggering Docker image builds for `linux/amd64` and `linux/arm64` and a GitHub Release
+
+Docker images are tagged with the full version (`1.2.3`), the major.minor (`1.2`), and `latest`.
+
 ## Building from source
 
 ```bash
