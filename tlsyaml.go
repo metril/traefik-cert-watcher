@@ -152,6 +152,30 @@ func sortedCerts(certs []certificate) []certificate {
 	return sorted
 }
 
+// logCertDiff logs which certificates were added or removed between two configs.
+func logCertDiff(existing, desired tlsConfig) {
+	oldSet := make(map[string]bool)
+	for _, c := range existing.TLS.Certificates {
+		oldSet[c.CertFile] = true
+	}
+	newSet := make(map[string]bool)
+	for _, c := range desired.TLS.Certificates {
+		newSet[c.CertFile] = true
+	}
+
+	for _, c := range desired.TLS.Certificates {
+		if !oldSet[c.CertFile] {
+			slog.Info("certificate added", "certFile", c.CertFile)
+		}
+	}
+	for _, c := range existing.TLS.Certificates {
+		if !newSet[c.CertFile] {
+			slog.Info("certificate removed", "certFile", c.CertFile)
+		}
+	}
+	slog.Info("tls.yaml updated", "before", len(existing.TLS.Certificates), "after", len(desired.TLS.Certificates))
+}
+
 // reconcile discovers cert pairs, compares with existing tls.yaml, and updates as needed.
 func reconcile(certsDir, pathPrefix, tlsYamlPath, defaultCert string) (bool, error) {
 	pairs, err := discoverCertPairs(certsDir, pathPrefix, tlsYamlPath)
@@ -178,6 +202,6 @@ func reconcile(certsDir, pathPrefix, tlsYamlPath, defaultCert string) (bool, err
 		return true, touchFile(tlsYamlPath)
 	}
 
-	slog.Info("cert set changed, updating tls.yaml")
+	logCertDiff(existing, desired)
 	return true, writeTLSConfig(tlsYamlPath, desired)
 }

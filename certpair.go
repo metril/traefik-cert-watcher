@@ -69,6 +69,7 @@ func discoverCertPairs(dir, pathPrefix, tlsYamlPath string) ([]certPair, error) 
 				certFile: filepath.Join(pathPrefix, base+ext),
 				keyFile:  filepath.Join(pathPrefix, base+".key"),
 			}
+			slog.Info("found certificate pair", "domain", base, "layout", "flat")
 			delete(keyFiles, base)
 		} else {
 			slog.Warn("orphaned certificate file (no matching .key)", "file", base+ext)
@@ -92,6 +93,7 @@ func discoverCertPairs(dir, pathPrefix, tlsYamlPath string) ([]certPair, error) 
 		subdir := filepath.Join(dir, domainName)
 		if pair, ok := discoverSubdir(subdir, domainName, pathPrefix); ok {
 			pairs[domainName] = pair
+			slog.Info("found certificate pair", "domain", domainName, "layout", "subdirectory")
 		}
 	}
 

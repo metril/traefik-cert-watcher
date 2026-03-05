@@ -87,7 +87,7 @@ func (w *watcher) run(ctx context.Context) error {
 				continue
 			}
 
-			slog.Debug("relevant filesystem event", "op", event.Op.String(), "file", event.Name)
+			slog.Info("certificate file changed", "op", event.Op.String(), "file", event.Name)
 			if debounceTimer != nil {
 				debounceTimer.Stop()
 			}
