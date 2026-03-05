@@ -9,4 +9,7 @@ adduser -u "$PUID" -G app -S -H -D app 2>/dev/null || true
 
 chown app:app /certs
 
+echo "entrypoint: uid=$(id -u app) gid=$(id -g app) target=PUID=$PUID/PGID=$PGID"
+ls -ldn /certs
+
 exec su-exec app traefik-cert-watcher
